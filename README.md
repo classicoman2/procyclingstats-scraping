@@ -1,2 +1,10 @@
 # web-scrapping
 Proves de web scrapping amb node.js
+
+https://www.donnywals.com/build-a-simple-web-scraper-with-node-js/
+
+https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3/
+
+    npm install --save request request-promise cheerio puppeteer
+
+

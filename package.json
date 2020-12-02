@@ -1,0 +1,31 @@
+{
+  "name": "web-scrapping",
+  "version": "1.0.0",
+  "description": "Un programa per a fer scrapping de dades de ciclisme",
+  "main": "scrapper.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "puppeteer": "^5.5.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/classicoman2/web-scrapping.git"
+  },
+  "keywords": [
+    "js",
+    "scrapping",
+    "nodejs"
+  ],
+  "author": "xtoni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/classicoman2/web-scrapping/issues"
+  },
+  "homepage": "https://github.com/classicoman2/web-scrapping#readme"
+}
