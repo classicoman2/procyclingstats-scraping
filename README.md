@@ -8,3 +8,4 @@ https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-j
     npm install --save request request-promise cheerio puppeteer
 
 
+Per descarregar imatges, https://stackoverflow.com/questions/12740659/downloading-images-with-node-js
