@@ -9,3 +9,5 @@ https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-j
 
 
 Per descarregar imatges, https://stackoverflow.com/questions/12740659/downloading-images-with-node-js
+
+- [ ] Pendent depurar error en promeses (surt en vermell)
