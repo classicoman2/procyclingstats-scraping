@@ -2,63 +2,227 @@ const request = require("request-promise");
 const $ = require("cheerio");
 var fs = require("fs");
 
-const url = 'https://www.procyclingstats.com/team/ag2r-la-mondiale-2020';
+//const url = 'https://www.procyclingstats.com/team/ag2r-la-mondiale-2020';
+const url = "https://www.procyclingstats.com/teams.php";
 
-request(url)
-  .then(function (html) {
-    //success!
+const url_base = "https://www.procyclingstats.com/team/";
 
-    let dadesCiclistes = [];
+//Obté directoris dels equips
+getTeamsPhotos(url);
 
-    // console.log(html);
-    let numCiclistes = $(".tmCont1 > ul > li a", html).length;
+/**
+ * Retorna una promesa d'una request que
+ * captura les imatges d'un equip i les guarda en un directori
+ * amb el nom del directori de l'equip
+ *
+ * xtoni --> codi basat en el de function getImagesFromTeam(url_base, teamDirectory)
+ *
+ * @param url_base
+ * @param teamDirectory   El directori de l'equip
+ *
+ * @returns res
+ */
+function scrapImagesFromTeam(url_base, teamDirectory) {
+  let url = url_base + teamDirectory;
 
-    console.log(numCiclistes);
-    //  console.log(  $(".tmCont1 > ul > li a", html)['0'] );
+  //xtoni -> Afegit per poder fer Promise.all
+  return new Promise(function (fulfil, reject) {
+    request(url)
+      .then(function (html) {
+        let dadesCiclistes = [];
 
-    for (let i = 0; i < numCiclistes - 1; i++) {
-      let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
-      const url_base = "https://www.procyclingstats.com/";
+        let numCiclistes = $(".tmCont1 > ul > li a", html).length;
 
-      let imageUrl = property.slice(
-        property.indexOf("url") + 4,
-        property.indexOf(".jpeg") + 5
-      );
+        //   console.log(teamDirectory + ": " + numCiclistes + " ciclistes");
 
-      dadesCiclistes.push(url_base + imageUrl);
-    }
+        for (let i = 0; i < numCiclistes - 1; i++) {
+          let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
+          const url_base = "https://www.procyclingstats.com/";
 
-    let download = function (uri, filename, callback) {
-      request.head(uri, function (err, res, body) {
-        console.log("content-type:", res.headers["content-type"]);
-        console.log("content-length:", res.headers["content-length"]);
+          let imageUrl = property.slice(
+            property.indexOf("url") + 4,
+            property.indexOf(".jpeg") + 5
+          );
 
-        request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
-      });
-    };
-
-    //xtoni  makedir per cada equip
-
-    fs.mkdirSync('./agrlamondiale')
-
-
-    // Download the images
-    for (let i = 0; i < numCiclistes - 1; i++) {
-      let fileName = dadesCiclistes[i].slice(
-        dadesCiclistes[i].lastIndexOf("/") + 1
-      );
-
-      download(dadesCiclistes[i], "./agrlamondiale/"+fileName, function () {
-        try {
-          console.log("done");
-        } catch (e) {
-          console.error(e);
+          dadesCiclistes.push(url_base + imageUrl);
         }
-      });
-    }
-  })
 
-  .catch(function (err) {
-    console.log(err);
-    //handle error
+        let download = function (uri, filename, callback) {
+          request.head(uri, function (err, res, body) {
+            // console.log("content-type:", res.headers["content-type"]);
+            // console.log("content-length:", res.headers["content-length"]);
+
+            request(uri)
+              .pipe(fs.createWriteStream(filename))
+              .on("close", callback);
+          });
+        };
+
+        //xtoni  makedir per cada equip
+
+        fs.mkdirSync("./teams/" + teamDirectory);
+
+        // Numero de fitxers descarregats
+        var n = 0;
+
+        // Download the images
+        for (let i = 0; i < numCiclistes - 1; i++) {
+          let fileName = dadesCiclistes[i].slice(
+            dadesCiclistes[i].lastIndexOf("/") + 1
+          );
+
+          //debug  xtoni
+
+          /*   console.log(fileName);
+
+          if (i== numCiclistes-1)
+          fulfil(html);
+          */
+
+          if (fileName.length == 0) {
+          //console.log("buit");
+            n++;
+          } else {
+            download(
+              dadesCiclistes[i],
+              "./teams/" + teamDirectory + "/" + fileName,
+              function () {
+                try {
+                  n++;
+                  if (n == numCiclistes) {
+                    //xtoni -> Afegit per poder fer Promise.all
+                    fulfil(html);
+                   console.log("promise fulfilled");
+                 }
+
+                } catch (e) {
+                  console.log("No he pogut descarregar la imatge");
+                }
+              }
+            );
+          }
+        }
+      })
+
+      .catch(function (err) {
+        console.log("error en promesa");
+        //handle error
+      });
+
+    //xtoni -> Afegit per poder fer Promise.all
   });
+}
+
+/**
+ * Captura les imatges d'un equip i les guarda en un directori
+ * amb el nom del directori de l'equip
+ *
+ * @param teamDirectory   El directori de l'equip
+ *
+ * @returns res
+ */
+function getImagesFromTeam(url_base, teamDirectory) {
+  let url = url_base + teamDirectory;
+
+  request(url)
+    .then(function (html) {
+      //success!
+
+      let dadesCiclistes = [];
+
+      // console.log(html);
+      let numCiclistes = $(".tmCont1 > ul > li a", html).length;
+
+      console.log(numCiclistes);
+      //  console.log(  $(".tmCont1 > ul > li a", html)['0'] );
+
+      for (let i = 0; i < numCiclistes - 1; i++) {
+        let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
+        const url_base = "https://www.procyclingstats.com/";
+
+        let imageUrl = property.slice(
+          property.indexOf("url") + 4,
+          property.indexOf(".jpeg") + 5
+        );
+
+        dadesCiclistes.push(url_base + imageUrl);
+      }
+
+      let download = function (uri, filename, callback) {
+        request.head(uri, function (err, res, body) {
+          console.log("content-type:", res.headers["content-type"]);
+          console.log("content-length:", res.headers["content-length"]);
+
+          request(uri)
+            .pipe(fs.createWriteStream(filename))
+            .on("close", callback);
+        });
+      };
+
+      //xtoni  makedir per cada equip
+
+      fs.mkdirSync("./agrlamondiale");
+      // Download the images
+      for (let i = 0; i < numCiclistes - 1; i++) {
+        let fileName = dadesCiclistes[i].slice(
+          dadesCiclistes[i].lastIndexOf("/") + 1
+        );
+
+        download(dadesCiclistes[i], "./agrlamondiale/" + fileName, function () {
+          try {
+            //console.log("done");
+          } catch (e) {
+            console.error("Error 'Unhandled rejection RequestError: Error: read ECONNRESET' anb fitxer: " + fileName);
+          }
+        });
+      }
+    })
+
+    .catch(function (err) {
+      console.log("error en descarregar imatges d'aquest equip");
+      //handle error
+    });
+}
+
+/**
+ * Fent scrapping, obté els directoris de fotos dels equips
+ *
+ * @param {string} url  La url principal
+ *
+ */
+function getTeamsPhotos(url) {
+  let directoris = [];
+
+  //Obté html de la url
+  request(url)
+    .then(function (html) {
+      // Obte tots els elements HTML que compleixen el patró
+      // emprant cheerio
+      let divTeams = $(".teamOvShirt", html);
+
+      for (property in divTeams) {
+        if (divTeams[property].attribs !== undefined)
+          directoris.push(divTeams[property].attribs.href.slice(5));
+      }
+
+      //Array de promises
+      let promises = [];
+
+      directoris.forEach((directori) => {
+        promises.push(scrapImagesFromTeam(url_base, directori));
+      });
+
+      // Executa totes les promeses per obtenir les imatges
+      Promise.all(promises)
+        .then(function (promiseResults) {
+          console.log("Success!!");
+        })
+        .catch(function (error) {
+          console.log("Error en Promise.all");
+        });
+    })
+    .catch(function (err) {
+      console.log(err);
+      //handle error
+    });
+}
