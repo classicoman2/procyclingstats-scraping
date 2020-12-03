@@ -5,6 +5,7 @@
   "main": "scrapper.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
+    "promise": "^8.1.0",
     "puppeteer": "^5.5.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"

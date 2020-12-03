@@ -2,7 +2,7 @@ const request = require("request-promise");
 const $ = require("cheerio");
 var fs = require("fs");
 
-const url = "https://www.procyclingstats.com/team/ag2r-la-mondiale-2020";
+const url = 'https://www.procyclingstats.com/team/ag2r-la-mondiale-2020';
 
 request(url)
   .then(function (html) {
