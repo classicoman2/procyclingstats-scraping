@@ -28,8 +28,6 @@ request(url)
       dadesCiclistes.push(url_base + imageUrl);
     }
 
-    //console.log(dadesCiclistes);
-
     let download = function (uri, filename, callback) {
       request.head(uri, function (err, res, body) {
         console.log("content-type:", res.headers["content-type"]);
