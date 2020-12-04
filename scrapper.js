@@ -8,18 +8,46 @@ const url = "https://www.procyclingstats.com/teams.php";
 const url_base = "https://www.procyclingstats.com/team/";
 
 //Obté directoris dels equips
-getTeamsData(url, true, false);
+getTeamsData(url, false, true);
 
 /**
  * Captura dades dels ciclistes
  *
- * @param url_base
- * @param teamDirectory   El directori de l'equip
+ * @param {string} url_base
+ * @param {string} teamDirectory   El directori de l'equip
  *
- * @returns res
+ * @returns {string}  JSON data
  */
 function scrapCyclistDataFromTeam(url_base, teamDirectory) {
+  // Url de l'equip
   let url = url_base + teamDirectory;
+
+  // Request del html de la pàgina de l'equip
+  request(url)
+    .then(function (html) {
+      //success!
+
+      let riders = [];
+
+      // console.log(html);
+      riders = $("a.rider", html);
+
+      for (let i = 0; i < riders.length; i++) {
+        // Promise per accedir a dades de ciclista
+
+        //zzzzz
+
+        console.log(riders[i].attribs.href);
+      }
+    })
+
+    .catch(function (err) {
+      console.log("error en descarregar imatges d'aquest equip");
+      console.log(err);
+      //handle error
+    });
+
+  //xtoni
 }
 
 /**
@@ -233,7 +261,8 @@ function getTeamsData(url, images, cyclistData) {
         //Array de promises
         let promises = [];
 
-        directoris.forEach((directori) => {
+        // xtoni --> provo només amb 1 equip de moment
+        directoris.slice(0, 1).forEach((directori) => {
           promises.push(scrapCyclistDataFromTeam(url_base, directori));
         });
       }
