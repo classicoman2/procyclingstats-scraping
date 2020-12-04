@@ -2,13 +2,15 @@ const request = require("request-promise");
 const $ = require("cheerio");
 var fs = require("fs");
 
+const url_base = 'https://www.procyclingstats.com';
+
 //const url = 'https://www.procyclingstats.com/team/ag2r-la-mondiale-2020';
 const url = "https://www.procyclingstats.com/teams.php";
 
-const url_base = "https://www.procyclingstats.com/team/";
+//const url_base = "https://www.procyclingstats.com/team/";
 
 //Obté directoris dels equips
-getTeamsData(url, false, true);
+getTeamsData(url_base, true, true);
 
 /**
  * Captura dades dels ciclistes
@@ -57,35 +59,33 @@ function scrapCyclistDataFromTeam(url_base, teamDirectory) {
  *
  * xtoni --> codi basat en el de function getImagesFromTeam(url_base, teamDirectory)
  *
- * @param url_base
- * @param teamDirectory   El directori de l'equip
+ * @param{string} url_base 
+ * @param{string} teamDirectory   El directori de l'equip
  *
- * @returns res
+ * @returns no return
  */
 function scrapImagesFromTeam(url_base, teamDirectory) {
-  let url = url_base + teamDirectory;
 
   //xtoni -> Afegit per poder fer Promise.all
   return new Promise(function (fulfil, reject) {
-    request(url)
+
+    request(url_base + '/team/' + teamDirectory)
       .then(function (html) {
         let dadesCiclistes = [];
-
         let numCiclistes = $(".tmCont1 > ul > li a", html).length;
-
-        //   console.log(teamDirectory + ": " + numCiclistes + " ciclistes");
 
         for (let i = 0; i < numCiclistes - 1; i++) {
           let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
-          const url_base = "https://www.procyclingstats.com/";
 
           let imageUrl = property.slice(
             property.indexOf("url") + 4,
             property.indexOf(".jpeg") + 5
           );
 
-          dadesCiclistes.push(url_base + imageUrl);
+          dadesCiclistes.push( url_base+'/'+imageUrl );
+
         }
+
 
         let download = function (uri, filename, callback) {
           request.head(uri, function (err, res, body) {
@@ -111,16 +111,9 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
             dadesCiclistes[i].lastIndexOf("/") + 1
           );
 
-          //debug  xtoni
 
-          /*   console.log(fileName);
-
-          if (i== numCiclistes-1)
-          fulfil(html);
-          */
 
           if (fileName.length == 0) {
-            //console.log("buit");
             n++;
           } else {
             download(
@@ -145,6 +138,7 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
 
       .catch(function (err) {
         console.log("error en promesa");
+        console.log( err );
         //handle error
       });
 
@@ -165,15 +159,9 @@ function getImagesFromTeam(url_base, teamDirectory) {
 
   request(url)
     .then(function (html) {
-      //success!
 
       let dadesCiclistes = [];
-
-      // console.log(html);
       let numCiclistes = $(".tmCont1 > ul > li a", html).length;
-
-      console.log(numCiclistes);
-      //  console.log(  $(".tmCont1 > ul > li a", html)['0'] );
 
       for (let i = 0; i < numCiclistes - 1; i++) {
         let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
@@ -229,17 +217,17 @@ function getImagesFromTeam(url_base, teamDirectory) {
 /**
  * Fent scrapping, obté els directoris de fotos dels equips
  *
- * @param {string} url  La url principal
+ * @param {string} url_base  La url base de la web
  * @param {boolean} images  Se descarreguen les imatges?
  * @param {boolean} cyclistData Se descarreguen les dates dels ciclistes?
  *
  */
-function getTeamsData(url, images, cyclistData) {
+function getTeamsData(url_base, images, cyclistData) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
   //Obté html de la url
-  request(url)
+  request(url_base + '/teams')
     .then(function (html) {
       // Obte tots els elements HTML que compleixen el patró
       // emprant cheerio
@@ -263,7 +251,7 @@ function getTeamsData(url, images, cyclistData) {
 
         // xtoni --> provo només amb 1 equip de moment
         directoris.slice(0, 1).forEach((directori) => {
-          promises.push(scrapCyclistDataFromTeam(url_base, directori));
+          promises.push(scrapCyclistDataFromTeam(url_base+'/team/'+ directori));
         });
       }
 
