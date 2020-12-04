@@ -22,49 +22,58 @@ getTeamsData(url_base, false, true);
  */
 function scrapCyclistDataFromTeam(url_base, url_team) {
   // Request del html de la pàgina de l'equip
-  request(url_team)
-    .then(function (html) {
-      //success!
+  return new Promise(function (fulfil, reject) {
+    request(url_team)
+      .then(function (html) {
+        //success!
 
-      let riders = [];
-      let riders_urls = [];
+        let riders = [];
+        let riders_urls = [];
 
-      // console.log(html);
-      riders = $("a.rider", html);
+        // console.log(html);
+        riders = $("a.rider", html);
 
-      for (let i = 0; i < riders.length; i++) {
-        // Promise per accedir a dades de ciclista
+        for (let i = 0; i < riders.length; i++) {
+          // Promise per accedir a dades de ciclista
 
-        riders_urls[i] = url_base + "/" + riders[i].attribs.href;
-      }
+          riders_urls[i] = url_base + "/" + riders[i].attribs.href;
+        }
 
-      //Array de promises
-      let promises = [];
+        //Array de promises
+        let promises = [];
 
-      // xtoni --> provo només amb 1 ciclistes de moment equip de moment
-      riders_urls.forEach((rider_url) => {
-        promises.push(scrapCyclistData(rider_url));
-      });
-
-      //Array de promises
-
-      // Executa totes les promeses per obtenir les imatges
-      Promise.all(promises)
-        .then(function (promiseResults) {
-          console.log("Success!!");
-        })
-        .catch(function (error) {
-          console.log("Error en Promise.all");
+        // xtoni --> provo només amb 1 ciclistes de moment equip de moment
+        riders_urls.forEach((rider_url) => {
+          promises.push(scrapCyclistData(rider_url));
         });
-    })
 
-    .catch(function (err) {
-      console.log("error en descarregar imatges d'aquest equip");
-      console.log(err);
-      //handle error
-    });
+        //Array de promises
 
-  //xtoni
+        // Executa totes les promeses de scrap de dades de ciclistes
+        Promise.all(promises)
+          .then(function (promiseResults) {
+            // promiseResults = Array amb els resultats de totes les promeses =
+            // informació de tots els ciclistes de l'equip.
+            fulfil({
+              team: url_team.slice(url_team.lastIndexOf("/") + 1),
+              ciclistes: promiseResults,
+            });
+
+            console.log(
+              "Fulfilled all the promises of cyclists of: " + url_team
+            );
+          })
+          .catch(function (error) {
+            console.log("Error en Promise.all");
+          });
+      })
+
+      .catch(function (err) {
+        console.log("error en descarregar imatges d'aquest equip");
+        console.log(err);
+        //handle error
+      });
+  });
 }
 
 /**
@@ -73,29 +82,48 @@ function scrapCyclistDataFromTeam(url_base, url_team) {
  */
 function scrapCyclistData(rider_url) {
   // Request del html de la pàgina de l'equip
-  request(rider_url)
-    .then(function (html) {
-      //nom
-      let nom = $("span.main-title", html)[0].children[0].data;
+  return new Promise(function (fulfil, reject) {
+    request(rider_url)
+      .then(function (html) {
+        //nom
+        let nom = $("span.main-title", html)[0]
+          ? $("span.main-title", html)[0].children[0].data
+          : undefined;
 
-      //altres
-      let dia = $(".rdr-info-cont > b", html)[0].children[0].parent.next.data;
+        //altres
+        let dia = $(".rdr-info-cont > b", html)[0]
+          ? $(".rdr-info-cont > b", html)[0].children[0].parent.next.data
+          : "";
 
-      let mesany = $(".rdr-info-cont > sup", html)[0].children[0].parent.next
-        .data;
-      let pes = $(".rdr-info-cont > span > b", html)[0].children[0].parent.next
-        .data;
-      let altura = $(".rdr-info-cont > span > span > b", html)[0].children[0]
-        .parent.next.data;
+        let mesany = $(".rdr-info-cont > sup", html)[0]
+          ? $(".rdr-info-cont > sup", html)[0].children[0].parent.next.data
+          : "";
 
-      //Stringify JSON
-      console.log(JSON.stringify({ nom: nom, naixement: dia + mesany, pes:pes, altura:altura }));
-    })
-    .catch(function (err) {
-      console.log("error en promesa");
-      console.log(err);
-      //handle error
-    });
+        // check if weight is in the html page
+        let pes = $(".rdr-info-cont > span > b", html)[0]
+          ? $(".rdr-info-cont > span > b", html)[0].children[0].parent.next.data
+          : undefined;
+
+        // check if altura is in the html page
+        let altura = $(".rdr-info-cont > span > span > b", html)[0]
+          ? $(".rdr-info-cont > span > span > b", html)[0].children[0].parent
+              .next.data
+          : undefined;
+
+        //fulful promise
+        fulfil({
+          nom: nom,
+          naixement: dia + mesany,
+          pes: pes,
+          altura: altura,
+        });
+      })
+      .catch(function (err) {
+        console.log("error en promesa - scrapCyclistData - " + rider_url);
+        console.log(err);
+        //handle error
+      });
+  });
 }
 
 /**
@@ -177,7 +205,7 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
       })
 
       .catch(function (err) {
-        console.log("error en promesa");
+        console.log("error en promesa - imatges d'un equip");
         console.log(err);
         //handle error
       });
@@ -285,8 +313,10 @@ function getTeamsData(url_base, images, cyclistData) {
         //Array de promises
         let promises = [];
 
-        // xtoni --> provo només amb 1 equip de moment
-        directoris.slice(0, 1).forEach((directori) => {
+        // Promeses per tots els equips
+
+        // xtoni - tenc problemes per conseguir totes les dades al mateix cop. 
+        directoris.slice(0,10).forEach((directori) => {
           promises.push(
             scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori)
           );
@@ -297,7 +327,22 @@ function getTeamsData(url_base, images, cyclistData) {
         // Executa totes les promeses per obtenir dades de l'equip
         Promise.all(promises)
           .then(function (promiseResults) {
-            console.log("Promeses equip ciclista -> Success");
+
+            fs.writeFile(
+              "jsons/dades_peloton.json",
+              JSON.stringify(promiseResults),
+              function (err) {
+                if (err) {
+                  console.log(err);
+                }
+              }
+            );
+
+            console.log("Test: el primer ciclista del primer equip es " + promiseResults[0].ciclistes[0].nom)
+
+            console.log(
+              "Promeses de dades de pagines d'equips ciclistes -> Success"
+            );
           })
           .catch(function (error) {
             console.log("Error en Promise.all equip ciclista");
@@ -318,7 +363,7 @@ function getTeamsData(url_base, images, cyclistData) {
         // Executa totes les promeses per obtenir les imatges
         Promise.all(promises)
           .then(function (promiseResults) {
-            console.log("Success!!");
+            console.log("Les promeses de les imatges han anat be");
           })
           .catch(function (error) {
             console.log("Error en Promise.all");
