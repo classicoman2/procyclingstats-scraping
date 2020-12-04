@@ -8,7 +8,19 @@ const url = "https://www.procyclingstats.com/teams.php";
 const url_base = "https://www.procyclingstats.com/team/";
 
 //Obté directoris dels equips
-getTeamsPhotos(url);
+getTeamsData(url, true, false);
+
+/**
+ * Captura dades dels ciclistes
+ *
+ * @param url_base
+ * @param teamDirectory   El directori de l'equip
+ *
+ * @returns res
+ */
+function scrapCyclistDataFromTeam(url_base, teamDirectory) {
+  let url = url_base + teamDirectory;
+}
 
 /**
  * Retorna una promesa d'una request que
@@ -80,7 +92,7 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
           */
 
           if (fileName.length == 0) {
-          //console.log("buit");
+            //console.log("buit");
             n++;
           } else {
             download(
@@ -92,9 +104,8 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
                   if (n == numCiclistes) {
                     //xtoni -> Afegit per poder fer Promise.all
                     fulfil(html);
-                   console.log("promise fulfilled");
-                 }
-
+                    console.log("promise fulfilled");
+                  }
                 } catch (e) {
                   console.log("No he pogut descarregar la imatge");
                 }
@@ -172,7 +183,10 @@ function getImagesFromTeam(url_base, teamDirectory) {
           try {
             //console.log("done");
           } catch (e) {
-            console.error("Error 'Unhandled rejection RequestError: Error: read ECONNRESET' anb fitxer: " + fileName);
+            console.error(
+              "Error 'Unhandled rejection RequestError: Error: read ECONNRESET' anb fitxer: " +
+                fileName
+            );
           }
         });
       }
@@ -188,9 +202,12 @@ function getImagesFromTeam(url_base, teamDirectory) {
  * Fent scrapping, obté els directoris de fotos dels equips
  *
  * @param {string} url  La url principal
+ * @param {boolean} images  Se descarreguen les imatges?
+ * @param {boolean} cyclistData Se descarreguen les dates dels ciclistes?
  *
  */
-function getTeamsPhotos(url) {
+function getTeamsData(url, images, cyclistData) {
+  //Array de directoris amb fotos en la url
   let directoris = [];
 
   //Obté html de la url
@@ -200,26 +217,47 @@ function getTeamsPhotos(url) {
       // emprant cheerio
       let divTeams = $(".teamOvShirt", html);
 
+      //Omple array amb directoris amb les fotos
       for (property in divTeams) {
         if (divTeams[property].attribs !== undefined)
           directoris.push(divTeams[property].attribs.href.slice(5));
       }
 
-      //Array de promises
-      let promises = [];
+      /**
+       * xtoni
+       *
+       * Obté la informació dels ciclistes
+       *
+       */
+      if (cyclistData) {
+        //Array de promises
+        let promises = [];
 
-      directoris.forEach((directori) => {
-        promises.push(scrapImagesFromTeam(url_base, directori));
-      });
-
-      // Executa totes les promeses per obtenir les imatges
-      Promise.all(promises)
-        .then(function (promiseResults) {
-          console.log("Success!!");
-        })
-        .catch(function (error) {
-          console.log("Error en Promise.all");
+        directoris.forEach((directori) => {
+          promises.push(scrapCyclistDataFromTeam(url_base, directori));
         });
+      }
+
+      /**
+       * Obte les imatges dels equips
+       */
+      if (images) {
+        //Array de promises
+        let promises = [];
+
+        directoris.forEach((directori) => {
+          promises.push(scrapImagesFromTeam(url_base, directori));
+        });
+
+        // Executa totes les promeses per obtenir les imatges
+        Promise.all(promises)
+          .then(function (promiseResults) {
+            console.log("Success!!");
+          })
+          .catch(function (error) {
+            console.log("Error en Promise.all");
+          });
+      }
     })
     .catch(function (err) {
       console.log(err);
