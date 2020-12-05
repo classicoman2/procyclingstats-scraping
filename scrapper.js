@@ -14,7 +14,7 @@ var fs = require("fs");
  * @param {string} url_base url base de la pàgina de ProCycling Stats
  * @param {string} url_team  url de l'equip
  *
- * @returns {string}  JSON data
+ * @return {string}  JSON data
  */
 function scrapCyclistDataFromTeam(url_base, url_team) {
   // Request del html de la pàgina de l'equip
@@ -125,13 +125,11 @@ function scrapCyclistData(rider_url) {
  * Retorna una promesa d'una request que
  * captura les imatges d'un equip i les guarda en un directori
  * amb el nom del directori de l'equip
- *
- * xtoni --> codi basat en el de function getImagesFromTeam(url_base, teamDirectory)
- *
+ **
  * @param{string} url_base
  * @param{string} teamDirectory   El directori de l'equip
  *
- * @returns no return
+ * @return {undefined}
  */
 function scrapImagesFromTeam(url_base, teamDirectory) {
   //xtoni -> Afegit per poder fer Promise.all
@@ -156,15 +154,13 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
           request.head(uri, function (err, res, body) {
             // console.log("content-type:", res.headers["content-type"]);
             // console.log("content-length:", res.headers["content-length"]);
-
             request(uri)
               .pipe(fs.createWriteStream(filename))
               .on("close", callback);
           });
         };
 
-        //xtoni  makedir per cada equip
-
+        // Create a dir for every team
         fs.mkdirSync("./teams/" + teamDirectory);
 
         // Numero de fitxers descarregats
@@ -186,7 +182,7 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
                 try {
                   n++;
                   if (n == numCiclistes) {
-                    //xtoni -> Afegit per poder fer Promise.all
+                    // Promise must be fulfilled
                     fulfil(html);
                     console.log("promise fulfilled");
                   }
@@ -204,88 +200,20 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
         console.log(err);
         //handle error
       });
-
-    //xtoni -> Afegit per poder fer Promise.all
   });
 }
 
-/**
- * Captura les imatges d'un equip i les guarda en un directori
- * amb el nom del directori de l'equip
- *
- * @param teamDirectory   El directori de l'equip
- *
- * @returns res
- */
-function getImagesFromTeam(url_base, teamDirectory) {
-  let url = url_base + teamDirectory;
-
-  request(url)
-    .then(function (html) {
-      let dadesCiclistes = [];
-      let numCiclistes = $(".tmCont1 > ul > li a", html).length;
-
-      for (let i = 0; i < numCiclistes - 1; i++) {
-        let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
-        const url_base = "https://www.procyclingstats.com/";
-
-        let imageUrl = property.slice(
-          property.indexOf("url") + 4,
-          property.indexOf(".jpeg") + 5
-        );
-
-        dadesCiclistes.push(url_base + imageUrl);
-      }
-
-      let download = function (uri, filename, callback) {
-        request.head(uri, function (err, res, body) {
-          console.log("content-type:", res.headers["content-type"]);
-          console.log("content-length:", res.headers["content-length"]);
-
-          request(uri)
-            .pipe(fs.createWriteStream(filename))
-            .on("close", callback);
-        });
-      };
-
-      //xtoni  makedir per cada equip
-
-      fs.mkdirSync("./agrlamondiale");
-      // Download the images
-      for (let i = 0; i < numCiclistes - 1; i++) {
-        let fileName = dadesCiclistes[i].slice(
-          dadesCiclistes[i].lastIndexOf("/") + 1
-        );
-
-        download(dadesCiclistes[i], "./agrlamondiale/" + fileName, function () {
-          try {
-            //console.log("done");
-          } catch (e) {
-            console.error(
-              "Error 'Unhandled rejection RequestError: Error: read ECONNRESET' anb fitxer: " +
-                fileName
-            );
-          }
-        });
-      }
-    })
-
-    .catch(function (err) {
-      console.log("error en descarregar imatges d'aquest equip");
-      //handle error
-    });
-}
 
 /**
  * Fent scrapping, obté els directoris de fotos dels equips
  *
  * @param {string} url_base  La url base de la web
- * @param {boolean} images  Se descarreguen les imatges?
- * @param {boolean} cyclistData Se descarreguen les dates dels ciclistes?
+ * @param {boolean} getCyclistImages  Se descarreguen les imatges?
+ * @param {boolean} getCyclistsData Se descarreguen les dates dels ciclistes?
  * @param {string}  numTeams  Quants equips he de descarregar (test mode - xtoni)
  *
  */
-function getTeamsData(url_base, images, cyclistData, numTeams) {
+function getTeamsData(url_base, getCyclistImages, getCyclistsData, numTeams) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
@@ -305,7 +233,7 @@ function getTeamsData(url_base, images, cyclistData, numTeams) {
       /**
        * Obté la informació dels ciclistes
        */
-      if (cyclistData) {
+      if (getCyclistsData) {
         //Array de promises
         let promises = [];
 
@@ -350,7 +278,7 @@ function getTeamsData(url_base, images, cyclistData, numTeams) {
       /**
        * Obte les imatges dels equips
        */
-      if (images) {
+      if (getCyclistImages) {
         //Array de promises
         let promises = [];
 
