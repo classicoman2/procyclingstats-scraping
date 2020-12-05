@@ -10,4 +10,9 @@ https://www.freecodecamp.org/news/the-ultimate-guide-to-web-scraping-with-node-j
 
 Per descarregar imatges, https://stackoverflow.com/questions/12740659/downloading-images-with-node-js
 
+- [x] Bug: linia 77, no agafa els elements img
+- [ ] Separar la funcio download en fitxer apart (funcions de fitxers   )
 - [ ] Pendent depurar error en promeses (surt en vermell)
+- [ ] Funcio que esborri el directori /teams i tot el seu contingut si ja existeix
+- [x] Afegida self-invoking function per evitar variables globals en el Global object i que puguin interferir amb les variables locals
+- [ ] When creating .json and image directories --> clean the directory and remove it before executing 
