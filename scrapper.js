@@ -2,15 +2,11 @@ const request = require("request-promise");
 const $ = require("cheerio");
 var fs = require("fs");
 
-const url_base = "https://www.procyclingstats.com";
-
-//const url = 'https://www.procyclingstats.com/team/ag2r-la-mondiale-2020';
-const url = "https://www.procyclingstats.com/teams.php";
-
-//const url_base = "https://www.procyclingstats.com/team/";
-
-//Obté directoris dels equips
-getTeamsData(url_base, false, true);
+(function () {
+  const url_base = "https://www.procyclingstats.com";
+  //Obté directoris dels equips
+  getTeamsData(url_base, false, true, 1);
+})();
 
 /**
  * Captura dades dels ciclistes
@@ -110,7 +106,7 @@ function scrapCyclistData(rider_url) {
               .next.data
           : undefined;
 
-        //fulful promise
+        //fulfil promise with the data of the cyclist
         fulfil({
           nom: nom,
           naixement: dia + mesany,
@@ -121,7 +117,6 @@ function scrapCyclistData(rider_url) {
       .catch(function (err) {
         console.log("error en promesa - scrapCyclistData - " + rider_url);
         console.log(err);
-        //handle error
       });
   });
 }
@@ -287,20 +282,21 @@ function getImagesFromTeam(url_base, teamDirectory) {
  * @param {string} url_base  La url base de la web
  * @param {boolean} images  Se descarreguen les imatges?
  * @param {boolean} cyclistData Se descarreguen les dates dels ciclistes?
+ * @param {string}  numTeams  Quants equips he de descarregar (test mode - xtoni)
  *
  */
-function getTeamsData(url_base, images, cyclistData) {
+function getTeamsData(url_base, images, cyclistData, numTeams) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
-  //Obté html de la url
+  // request a la url on hi ha tots els equips llistats
   request(url_base + "/teams")
     .then(function (html) {
       // Obte tots els elements HTML que compleixen el patró
       // emprant cheerio
       let divTeams = $(".teamOvShirt", html);
 
-      //Omple array amb directoris amb les fotos
+      // Obté noms dels directoris de tots els equips
       for (property in divTeams) {
         if (divTeams[property].attribs !== undefined)
           directoris.push(divTeams[property].attribs.href.slice(5));
@@ -315,8 +311,8 @@ function getTeamsData(url_base, images, cyclistData) {
 
         // Promeses per tots els equips
 
-        // xtoni - tenc problemes per conseguir totes les dades al mateix cop. 
-        directoris.slice(0,10).forEach((directori) => {
+        // xtoni - tenc problemes per conseguir totes les dades al mateix cop.
+        directoris.slice(0, numTeams).forEach((directori) => {
           promises.push(
             scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori)
           );
@@ -327,7 +323,6 @@ function getTeamsData(url_base, images, cyclistData) {
         // Executa totes les promeses per obtenir dades de l'equip
         Promise.all(promises)
           .then(function (promiseResults) {
-
             fs.writeFile(
               "jsons/dades_peloton.json",
               JSON.stringify(promiseResults),
@@ -338,7 +333,10 @@ function getTeamsData(url_base, images, cyclistData) {
               }
             );
 
-            console.log("Test: el primer ciclista del primer equip es " + promiseResults[0].ciclistes[0].nom)
+            console.log(
+              "Test: el primer ciclista del primer equip es " +
+                promiseResults[0].ciclistes[0].nom
+            );
 
             console.log(
               "Promeses de dades de pagines d'equips ciclistes -> Success"
@@ -356,7 +354,7 @@ function getTeamsData(url_base, images, cyclistData) {
         //Array de promises
         let promises = [];
 
-        directoris.forEach((directori) => {
+        directoris.slice(0, numTeams).forEach((directori) => {
           promises.push(scrapImagesFromTeam(url_base, directori));
         });
 
