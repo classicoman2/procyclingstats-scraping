@@ -16,3 +16,5 @@ Per descarregar imatges, https://stackoverflow.com/questions/12740659/downloadin
 - [ ] Funcio que esborri el directori /teams i tot el seu contingut si ja existeix
 - [x] Afegida self-invoking function per evitar variables globals en el Global object i que puguin interferir amb les variables locals
 - [ ] When creating .json and image directories --> clean the directory and remove it before executing 
+- [ ] incloure excepcions en el codi en el tractament amb fitxers
+- [ ] emprar modul 'path' per crear els paths als fitxers
