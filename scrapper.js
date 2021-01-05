@@ -15,7 +15,12 @@ const TEAMS_DIRECTORY = "teams";
 (function () {
   const url_base = "https://www.procyclingstats.com";
   //Obté directoris dels equips
-  getTeamsData(url_base, true, false, 3);
+  let scrapImages = Boolean(process.argv[2]);
+  let strapData = Boolean(process.argv[3]);
+  let teamStart = process.argv[4];
+  let teamEnd = process.argv[5];
+
+  getTeamsData(url_base, scrapImages, strapData, teamStart, teamEnd);
 })();
 
 /**
@@ -24,10 +29,16 @@ const TEAMS_DIRECTORY = "teams";
  * @param {string} url_base  La url base de la web
  * @param {boolean} getCyclistImages  Se descarreguen les imatges?
  * @param {boolean} getCyclistsData Se descarreguen les dates dels ciclistes?
- * @param {string}  numTeams  De quants equips he de descarregar info i fotos (test mode - xtoni)
- *
+ * @param {string}  teamStart  Posicio inicial directori de teams
+ * @param {string}  teamEnd  Posicio final directori de teams; si val 99, agafa valor màxim
  */
-function getTeamsData(url_base, getCyclistImages, getCyclistsData, numTeams) {
+function getTeamsData(
+  url_base,
+  getCyclistImages,
+  getCyclistsData,
+  teamStart,
+  teamEnd
+) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
@@ -46,25 +57,25 @@ function getTeamsData(url_base, getCyclistImages, getCyclistsData, numTeams) {
        * Obté la informació dels ciclistes
        */
       if (getCyclistsData) {
-        //Array de promises
-        let promises = [];
-
-        // Promeses per tots els equips
-
+        //Array de promises de tots els equips
         // xtoni - tenc problemes per conseguir totes les dades al mateix cop.
-        directoris.slice(0, numTeams).forEach((directori) => {
-          promises.push(
-            scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori)
-          );
-        });
+        let promises = [];
+        directoris
+          .slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length)
+          .forEach((directori) => {
+            promises.push(
+              scrapCyclistDataFromTeam(
+                url_base,
+                url_base + "/team/" + directori
+              )
+            );
+          });
 
-        //Array de promises
-
-        // Executa totes les promeses per obtenir dades de l'equip
+        //Array de promises: Executa totes les promeses per obtenir dades de l'equip
         Promise.all(promises)
           .then(function (promiseResults) {
             fs.writeFile(
-              "json/dades_peloton.json",
+              `json/dades_peloton-teams_${teamStart}-to-${teamEnd}.json`,
               JSON.stringify(promiseResults),
               function (err) {
                 if (err) {
@@ -91,18 +102,20 @@ function getTeamsData(url_base, getCyclistImages, getCyclistsData, numTeams) {
        * Obte les imatges dels equips
        */
       if (getCyclistImages) {
-        // Si existeix el directori dels equips, esborra el seu contingut. xtoni zzzzz
-        if (fs.existsSync("./" + TEAMS_DIRECTORY)) {
+        // Si existeix el directori de l'equip esborra el seu contingut. xtoni zzzzz
+        /*     if (fs.existsSync("./" + TEAMS_DIRECTORY)) {
           // return;
 
           fm.removeContentsOfDirectory(TEAMS_DIRECTORY);
         }
-
+   */
         // Crea un array de promises amb peticions de fotos de cada equip
         let promises = [];
-        directoris.slice(0, numTeams).forEach((directori) => {
-          promises.push(scrapImagesFromTeam(url_base, directori));
-        });
+        directoris
+          .slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length - 1)
+          .forEach((directori) => {
+            promises.push(scrapImagesFromTeam(url_base, directori));
+          });
 
         // Executa totes les promeses per obtenir les imatges
         Promise.all(promises)
@@ -262,8 +275,9 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
           dadesCiclistes.push(url_base + "/" + imageUrl);
         }
 
-        // Create a dir for every team
-        fs.mkdirSync(TEAMS_DIRECTORY + "/" + teamDirectory);
+        // Create a dir for every team if doesn't exist
+        if (!fs.existsSync(TEAMS_DIRECTORY + "/" + teamDirectory))
+          fs.mkdirSync(TEAMS_DIRECTORY + "/" + teamDirectory);
 
         // Numero de fitxers descarregats
         var n = 0;
