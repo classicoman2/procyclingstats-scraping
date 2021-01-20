@@ -1,18 +1,11 @@
 {
   "name": "web-scrapping",
   "version": "1.0.0",
-  "description": "Un programa per a fer scrapping de dades de ciclisme",
-  "main": "scrapper.js",
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
-    "promise": "^8.1.0",
-    "puppeteer": "^5.5.0",
-    "request": "^2.88.2",
-    "request-promise": "^4.2.6"
-  },
-  "devDependencies": {},
+  "description": "A script to scrap data from UCI cycling teams in Procycling Stats",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon scrapper.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -23,10 +16,18 @@
     "scrapping",
     "nodejs"
   ],
-  "author": "xtoni",
-  "license": "ISC",
+  "author": "classicoman",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/classicoman2/web-scrapping/issues"
   },
-  "homepage": "https://github.com/classicoman2/web-scrapping#readme"
+  "homepage": "https://github.com/classicoman2",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "promise": "^8.1.0",
+    "puppeteer": "^5.5.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  },
+  "devDependencies": {}
 }

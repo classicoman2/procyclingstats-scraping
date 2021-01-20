@@ -1,0 +1,187 @@
+[
+  {
+    "team": "ag2r-citroen-team-2021",
+    "ciclistes": [
+      {
+        "nom": "François Bidard",
+        "naixement": "19/March/1992",
+        "pes": "65",
+        "altura": "1.8"
+      },
+      {
+        "nom": "Geoffrey Bouchard",
+        "naixement": "1/April/1992",
+        "pes": "64",
+        "altura": "1.77"
+      },
+      {
+        "nom": "Lilian Calmejane",
+        "naixement": "6/December/1992",
+        "pes": "69",
+        "altura": "1.84"
+      },
+      {
+        "nom": "Clément Champoussin",
+        "naixement": "29/May/1998",
+        "pes": "60",
+        "altura": "1.8"
+      },
+      {
+        "nom": "Mikaël Cherel",
+        "naixement": "17/March/1986",
+        "pes": "65",
+        "altura": "1.83"
+      },
+      {
+        "nom": "Benoît Cosnefroy",
+        "naixement": "17/October/1995",
+        "pes": "64",
+        "altura": "1.76"
+      },
+      {
+        "nom": "Stan Dewulf",
+        "naixement": "20/December/1997",
+        "pes": "75",
+        "altura": "1.74"
+      },
+      {
+        "nom": "Julien Duval",
+        "naixement": "27/May/1990",
+        "pes": "68",
+        "altura": "1.79"
+      },
+      {
+        "nom": "Mathias Frank",
+        "naixement": "9/December/1986",
+        "pes": "64",
+        "altura": "1.76"
+      },
+      {
+        "nom": "Tony Gallopin",
+        "naixement": "24/May/1988",
+        "pes": "69",
+        "altura": "1.8"
+      },
+      {
+        "nom": "Ben Gastauer",
+        "naixement": "14/November/1987",
+        "pes": "73",
+        "altura": "1.9"
+      },
+      {
+        "nom": "Dorian Godon",
+        "naixement": "25/May/1996",
+        "pes": "73",
+        "altura": "1.9"
+      },
+      {
+        "nom": "Alexis Gougeard",
+        "naixement": "5/March/1993",
+        "pes": "70",
+        "altura": "1.76"
+      },
+      {
+        "nom": "Jaakko Hänninen",
+        "naixement": "16/April/1997",
+        "pes": "59",
+        "altura": "1.77"
+      },
+      {
+        "nom": "Anthony Jullien",
+        "naixement": "5/March/1998",
+        "pes": "72",
+        "altura": "1.78"
+      },
+      {
+        "nom": "Bob Jungels",
+        "naixement": "22/September/1992",
+        "pes": "70",
+        "altura": "1.89"
+      },
+      {
+        "nom": "Lawrence Naesen",
+        "naixement": "28/August/1992",
+        "pes": "72",
+        "altura": "1.9"
+      },
+      {
+        "nom": "Oliver Naesen",
+        "naixement": "16/September/1990",
+        "pes": "72",
+        "altura": "1.84"
+      },
+      {
+        "nom": "Ben O'Connor",
+        "naixement": "25/November/1995",
+        "pes": "66",
+        "altura": "1.88"
+      },
+      {
+        "nom": "Aurélien Paret-Peintre",
+        "naixement": "27/February/1996",
+        "pes": "64",
+        "altura": "1.84"
+      },
+      {
+        "nom": "Nans Peters",
+        "naixement": "12/March/1994",
+        "pes": "70",
+        "altura": "1.77"
+      },
+      {
+        "nom": "Nicolas Prodhomme",
+        "naixement": "1/February/1997",
+        "pes": "63",
+        "altura": "1.74"
+      },
+      {
+        "nom": "Marc Sarreau",
+        "naixement": "10/June/1993",
+        "pes": "76",
+        "altura": "1.82"
+      },
+      {
+        "nom": "Michael Schär",
+        "naixement": "29/September/1986",
+        "pes": "78",
+        "altura": "1.98"
+      },
+      {
+        "nom": "Damien Touzé",
+        "naixement": "7/July/1996",
+        "pes": "69",
+        "altura": "1.74"
+      },
+      {
+        "nom": "Greg Van Avermaet",
+        "naixement": "17/May/1985",
+        "pes": "74",
+        "altura": "1.81"
+      },
+      {
+        "nom": "Gijs Van Hoecke",
+        "naixement": "12/November/1991",
+        "pes": "78",
+        "altura": "1.86"
+      },
+      {
+        "nom": "Andrea Vendrame",
+        "naixement": "20/July/1994",
+        "pes": "60",
+        "altura": "1.68"
+      },
+      {
+        "nom": "Clément Venturini",
+        "naixement": "16/October/1993",
+        "pes": "60",
+        "altura": "1.65"
+      },
+      {
+        "nom": "Larry Warbasse",
+        "naixement": "28/June/1990",
+        "pes": "67",
+        "altura": "1.83"
+      }
+    ]
+  }
+]

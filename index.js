@@ -8,19 +8,20 @@ var fs = require("fs");
 
 const fm = require("./modules/fileManagement");
 
-const TEAMS_DIRECTORY = "teams";
+const OUTPUT_DIR = "_output";
 
 /* MAIN */
 
 (function () {
   const url_base = "https://www.procyclingstats.com";
   //Obté directoris dels equips
-  let scrapImages = Boolean(process.argv[2]);
-  let strapData = Boolean(process.argv[3]);
+  let scrapImages = process.argv[2] == "true" ? true : false;
+  let scrapData = process.argv[3] == "true" ? true : false;
+
   let teamStart = process.argv[4];
   let teamEnd = process.argv[5];
 
-  getTeamsData(url_base, scrapImages, strapData, teamStart, teamEnd);
+  getTeamsData(url_base, scrapImages, scrapData, teamStart, teamEnd);
 })();
 
 /**
@@ -43,7 +44,7 @@ function getTeamsData(
   let directoris = [];
 
   // request a la url on hi ha tots els equips llistats
-  request(url_base + "/" + TEAMS_DIRECTORY)
+  request(url_base + "/teams")
     .then(function (html) {
       // Obte tots els elements HTML que compleixen el patró emprant cheerio
       let divTeams = $(".teamOvShirt", html);
@@ -53,13 +54,11 @@ function getTeamsData(
           directoris.push(divTeams[property].attribs.href.slice(5));
       }
 
-      /**
-       * Obté la informació dels ciclistes
-       */
       if (getCyclistsData) {
         //Array de promises de tots els equips
-        // xtoni - tenc problemes per conseguir totes les dades al mateix cop.
         let promises = [];
+
+        // 1 promesa per equip
         directoris
           .slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length)
           .forEach((directori) => {
@@ -75,7 +74,7 @@ function getTeamsData(
         Promise.all(promises)
           .then(function (promiseResults) {
             fs.writeFile(
-              `json/dades_peloton-teams_${teamStart}-to-${teamEnd}.json`,
+              `${OUTPUT_DIR}/peloton-teams_${teamStart}-to-${teamEnd}.json`,
               JSON.stringify(promiseResults),
               function (err) {
                 if (err) {
@@ -103,10 +102,10 @@ function getTeamsData(
        */
       if (getCyclistImages) {
         // Si existeix el directori de l'equip esborra el seu contingut. xtoni zzzzz
-        /*     if (fs.existsSync("./" + TEAMS_DIRECTORY)) {
+        /*     if (fs.existsSync("./" + OUTPUT_DIR)) {
           // return;
 
-          fm.removeContentsOfDirectory(TEAMS_DIRECTORY);
+          fm.removeContentsOfDirectory(OUTPUT_DIR);
         }
    */
         // Crea un array de promises amb peticions de fotos de cada equip
@@ -163,7 +162,7 @@ function scrapCyclistDataFromTeam(url_base, url_team) {
         //Array de promises
         let promises = [];
 
-        // xtoni --> provo només amb 1 ciclistes de moment equip de moment
+        // 1 promesa per ciclista
         riders_urls.forEach((rider_url) => {
           promises.push(scrapCyclistData(rider_url));
         });
@@ -206,37 +205,42 @@ function scrapCyclistData(rider_url) {
   return new Promise(function (fulfil, reject) {
     request(rider_url)
       .then(function (html) {
-        //nom
-        let nom = $("span.main-title", html)[0]
+        // name
+        let name = $("span.main-title", html)[0]
           ? $("span.main-title", html)[0].children[0].data
           : undefined;
 
-        //altres
-        let dia = $(".rdr-info-cont > b", html)[0]
+        // birthdate
+        let day = $(".rdr-info-cont > b", html)[0]
           ? $(".rdr-info-cont > b", html)[0].children[0].parent.next.data
           : "";
-
         let mesany = $(".rdr-info-cont > sup", html)[0]
           ? $(".rdr-info-cont > sup", html)[0].children[0].parent.next.data
           : "";
+        // birthdate
+        let birthdate = `${day.trim()}/${mesany.split(" ")[1]}/${
+          mesany.split(" ")[2]
+        }`;
 
         // check if weight is in the html page
-        let pes = $(".rdr-info-cont > span > b", html)[0]
+        let weight = $(".rdr-info-cont > span > b", html)[0]
           ? $(".rdr-info-cont > span > b", html)[0].children[0].parent.next.data
           : undefined;
+        weight = weight.split(" ")[1];
 
         // check if altura is in the html page
-        let altura = $(".rdr-info-cont > span > span > b", html)[0]
+        let height = $(".rdr-info-cont > span > span > b", html)[0]
           ? $(".rdr-info-cont > span > span > b", html)[0].children[0].parent
               .next.data
           : undefined;
+        height = height.split(" ")[1];
 
         //fulfil promise with the data of the cyclist
         fulfil({
-          nom: nom,
-          naixement: dia + mesany,
-          pes: pes,
-          altura: altura,
+          nom: name,
+          naixement: birthdate,
+          pes: weight,
+          altura: height,
         });
       })
       .catch(function (err) {
@@ -276,8 +280,8 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
         }
 
         // Create a dir for every team if doesn't exist
-        if (!fs.existsSync(TEAMS_DIRECTORY + "/" + teamDirectory))
-          fs.mkdirSync(TEAMS_DIRECTORY + "/" + teamDirectory);
+        if (!fs.existsSync(OUTPUT_DIR + "/" + teamDirectory))
+          fs.mkdirSync(OUTPUT_DIR + "/" + teamDirectory);
 
         // Numero de fitxers descarregats
         var n = 0;
@@ -293,7 +297,7 @@ function scrapImagesFromTeam(url_base, teamDirectory) {
           } else {
             fm.downloadFileFromURI(
               dadesCiclistes[i],
-              TEAMS_DIRECTORY + "/" + teamDirectory + "/" + fileName,
+              OUTPUT_DIR + "/" + teamDirectory + "/" + fileName,
               function () {
                 try {
                   n++;
