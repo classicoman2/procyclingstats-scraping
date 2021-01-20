@@ -21,15 +21,16 @@ npm i
 
 ## TODO
 > BUGS
-- [x] Normalize names of properties and variables (English)
 - [ ] Parse dates using https://www.npmjs.com/package/date-and-time
-- [ ] Debug errors in promises (when all data is required in a single execution)
+- [x] Debug errors in promises (when all data is required in a single execution) --> SOLVED: avoid sending all requests simultaneously
+- [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
-- [x] Added a property `image:` with the name of image file
+- [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
 - [ ] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/client` folder.
 - [ ] Create & Publish package: add bin.js, directory structure, SOLID principles, etc.
-- [ ] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
+- [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
+- [x] Added a property `image:` with the name of image file
 
 > REFACTORING:
 - [ ] Linting
@@ -40,4 +41,4 @@ npm i
 > DONE:
 - [x] Added a self-invoking function to avoid creating variables in Global object and interferences with local vars
 - [x] Bug: linia 77, no agafa els elements img
-- [x] Separar la funcio download en fitxer apart (funcions de fitxers)
+- [x] File functions should be in separated file

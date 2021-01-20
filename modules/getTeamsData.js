@@ -169,21 +169,19 @@ function scrapCyclistData(rider_url) {
 
         // check if weight is in the html page
         let weight = $(".rdr-info-cont > span > b", html)[0]
-          ? $(".rdr-info-cont > span > b", html)[0].children[0].parent.next.data
-          : undefined;
-        weight = weight.split(" ")[1];
+          ? $(".rdr-info-cont > span > b", html)[0].children[0].parent.next.data.split(" ")[1]
+          : "";
 
         // check if altura is in the html page
         let height = $(".rdr-info-cont > span > span > b", html)[0]
-          ? $(".rdr-info-cont > span > span > b", html)[0].children[0].parent.next.data
-          : undefined;
-        height = height.split(" ")[1];
+          ? $(".rdr-info-cont > span > span > b", html)[0].children[0].parent.next.data.split(" ")[1]
+          : "";
 
         // get image
         let image = $(".rdr-img-cont img", html)[0]
           ? $(".rdr-img-cont img", html)[0]
-          : undefined;
-        image = path.basename(image.attribs.src);
+          : "";
+        image = (image != "") ? path.basename(image.attribs.src) : "";
 
         //fulfil promise with the data of the cyclist
         fulfil({

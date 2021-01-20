@@ -19,5 +19,11 @@ const OUTPUT_DIR = "_output";
     }
   }
 
-  getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, teamStart, teamEnd);
+  let i = 0;
+  setInterval(() => {
+    getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, i, i + 1);
+    i++;
+  }, Math.floor(Math.random() * (6000 - 3000) + 3000));
+
+  //getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, teamStart, teamEnd);
 })();
