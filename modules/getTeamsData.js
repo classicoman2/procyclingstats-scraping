@@ -64,13 +64,6 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
        * Obte les imatges dels equips
        */
       if (getCyclistImages) {
-        // Si existeix el directori de l'equip esborra el seu contingut. xtoni zzzzz
-        /*     if (fs.existsSync("./" + OUTPUT_DIR)) {
-            // return;
-  
-            fm.removeContentsOfDirectory(OUTPUT_DIR);
-          }
-     */
         // Crea un array de promises amb peticions de fotos de cada equip
         let promises = [];
         directoris.slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length - 1).forEach((directori) => {
