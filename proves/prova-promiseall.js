@@ -1,4 +1,4 @@
-var Promise = require("promise");
+const Promise = require("promise");
 const request = require("request-promise");
 
 //const url = "https://www.procyclingstats.com/team/ag2r-la-mondiale-2020";

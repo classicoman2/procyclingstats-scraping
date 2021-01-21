@@ -1,5 +1,5 @@
-fs = require('fs');
-fs = require('path');
+const fs = require('fs');
+const path = require('path');
 
 const PATH = './teams';
 

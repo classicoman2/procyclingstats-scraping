@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { getTeamsData } = require("./modules/getTeamsData");
+const { getTeamsData } = require("./getTeamsData");
 
 const OUTPUT_DIR = "_output";
 
@@ -19,11 +19,12 @@ const OUTPUT_DIR = "_output";
     }
   }
 
-  let i = 0;
-  setInterval(() => {
+  let i = teamStart;
+  // Random interval between 3 and 6 sec
+  let interval = setInterval(() => {
     getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, i, i + 1);
     i++;
-  }, Math.floor(Math.random() * (6000 - 3000) + 3000));
 
-  //getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, teamStart, teamEnd);
+    if (i == teamEnd) clearInterval(interval);
+  }, Math.floor(Math.random() * (6000 - 3000) + 3000));
 })();

@@ -4,8 +4,13 @@
   "description": "A script to scrap data from UCI cycling teams in Procycling Stats",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "scrap": "node src/scrapper/index.js",
+    "scrap-dev": "nodemon src/scrapper/index.js",
+    "toc": "markdown-toc -i README.md",
+    "lint": "eslint . --ignore-path .gitignore",
+    "start": "babel-node -- src/cli/bin",
+
+    "dev": "nodemon src/cli/bin"
   },
   "repository": {
     "type": "git",
@@ -25,10 +30,23 @@
   "dependencies": {
     "chalk": "^4.1.0",
     "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1",
     "promise": "^8.1.0",
     "puppeteer": "^5.5.0",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "update-notifier": "^5.0.1",
+    "yargs": "^16.2.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/node": "^7.12.10",
+    "eslint": "^7.18.0",
+    "markdown-toc": "^1.2.0",
+    "please-upgrade-node": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=10"
+  }
 }
