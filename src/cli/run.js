@@ -2,13 +2,12 @@ const chalk = require("chalk");
 const express = require("express");
 const path = require("path");
 
-const load = require('./utils/load')
+const load = require("./utils/load");
 
 // El servidor
 const jsonServer = require("../server");
 
 module.exports = function (argv) {
-  console.log(argv);
 
   console.log();
   console.log(chalk.cyan("  \\{^_^}/ hi!"));
@@ -30,18 +29,30 @@ module.exports = function (argv) {
   });
 */
 
-  app.use(express.static(__dirname + "/public"));
+  app.use(express.static("public"));
 
   app.get("/", function (req, res) {
     res.sendFile(path.dirname(path.dirname(__dirname)) + "/public/index.html");
   });
-  
+
   console.log(chalk.green(` Running in http://localhost:${port}`));
   console.log(chalk.green(` Running in http://localhost:${port}/api`));
 
   // Get dades dels fitxers
-  app.get("/api", function (req, res)  {
+  app.get("/api", function (req, res) {
     //xtoni -> passar a constant
     res.json(load("/_output"));
+  });
+
+  // Catch and handle any error occurring in the server process
+  process.on("uncaughtException", (error) => {
+    if (error.errno === "EADDRINUSE")
+      console.log(
+        chalk.red(
+          `Cannot bind to the port ${error.port}. Please specify another port number either through --port argument or through the json-server.json configuration file`
+        )
+      );
+    else console.log("Some error occurred", error);
+    process.exit(1);
   });
 };

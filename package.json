@@ -8,7 +8,8 @@
     "scrap-dev": "nodemon src/scrapper/index.js",
     "toc": "markdown-toc -i README.md",
     "lint": "eslint . --ignore-path .gitignore",
-    "start": "babel-node -- src/cli/bin",
+    "fix": "npm run lint -- --fix",
+    "start": "babel-node -- src/cli/bin --port 4003",
     "dev": "nodemon src/cli/bin"
   },
   "repository": {
