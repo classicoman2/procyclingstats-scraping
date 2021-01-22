@@ -14,13 +14,16 @@ const path = require("path");
  * @param {boolean} getCyclistsData Se descarreguen les dates dels ciclistes?
  * @param {string}  teamStart  Posicio inicial directori de teams
  * @param {string}  teamEnd  Posicio final directori de teams; si val 99, agafa valor màxim
+ * @param {string}  season   empty if not specified
  */
-function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, teamStart, teamEnd) {
+function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, teamStart, teamEnd, season) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
+  let url_request = (season !== "") ? url_base + `/teams.php?year=${season}&filter=Filter` : url_base + "/teams";
+
   // request a la url on hi ha tots els equips llistats
-  request(url_base + "/teams")
+  request(url_request)
     .then(function (html) {
       // Obte tots els elements HTML que compleixen el patró emprant cheerio
       let divTeams = $("ul.list a", html);
@@ -44,7 +47,7 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
         Promise.all(promises)
           .then(function (result) {
             fs.writeFile(
-              `${output_dir}/peloton-teams_${teamStart}-to-${teamEnd}.json`,
+              `${output_dir}/peloton-teams_${teamStart}-to-${teamEnd}-${season}.json`,
               JSON.stringify(result),
               function (err) {
                 if (err) {

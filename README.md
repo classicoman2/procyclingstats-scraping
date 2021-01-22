@@ -16,13 +16,13 @@ Disclaimer: I use the scrapped data for teaching purposes only.
 
 ## Usage
 ```bash
-# Scrap Images and data from teams, from 4th to 9th team
-npm run scrap true true 3 9
+# Scrap Images and data from teams, from 4th to 9th team, current season
+npm run scrap true true 3 9 
 ```
 
 ```bash
-# Scrap Images and data from all teams
-npm run scrap true true 0 99
+# Scrap Images and data from all teams of season 2005
+npm run scrap true true 0 99 2005
 ```
 
 ## Dependencies
@@ -46,7 +46,8 @@ npm i
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
-- [ ] Add `season` to get cyclists for every year
+- [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
+- [x] Add `season` to get cyclists for every year
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
 - [x] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/public` folder.
 - [ ] Create & Publish package: add bin.js, directory structure, SOLID principles, etc. + `babel-node`, etc.
