@@ -19,7 +19,7 @@ const OUTPUT_DIR = "_output";
     }
   }
 
-  let i = teamStart;
+  let i = Number(teamStart);
   // Random interval between 3 and 6 sec
   let interval = setInterval(() => {
     getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, i, i + 1);

@@ -23,10 +23,12 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
   request(url_base + "/teams")
     .then(function (html) {
       // Obte tots els elements HTML que compleixen el patró emprant cheerio
-      let divTeams = $(".teamOvShirt", html);
+      let divTeams = $("ul.list a", html);
+
       // Obté els directoris d'equips
-      for (property in divTeams) {
-        if (divTeams[property].attribs !== undefined) directoris.push(divTeams[property].attribs.href.slice(5));
+      for (i in divTeams) {
+        if (divTeams[i].attribs !== undefined) 
+          directoris.push(divTeams[i].attribs.href.slice(5));
       }
 
       if (getCyclistsData) {
