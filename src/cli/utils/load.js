@@ -28,5 +28,5 @@ module.exports = function (dir) {
       });
     }
   });
-  return JSON.stringify(data);
+  return data;
 };

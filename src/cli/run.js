@@ -37,10 +37,11 @@ module.exports = function (argv) {
   });
   
   console.log(chalk.green(` Running in http://localhost:${port}`));
+  console.log(chalk.green(` Running in http://localhost:${port}/api`));
 
   // Get dades dels fitxers
   app.get("/api", function (req, res)  {
     //xtoni -> passar a constant
-    res.send(load("/_output"));
+    res.json(load("/_output"));
   });
 };
