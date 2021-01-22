@@ -9,7 +9,6 @@
     "toc": "markdown-toc -i README.md",
     "lint": "eslint . --ignore-path .gitignore",
     "start": "babel-node -- src/cli/bin",
-
     "dev": "nodemon src/cli/bin"
   },
   "repository": {

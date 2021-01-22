@@ -38,17 +38,18 @@ npm i
 
 ## TODO
 > BUGS
-- [ ] Parse dates using https://www.npmjs.com/package/date-and-time
 - [x] Debug errors in promises (when all data is required in a single execution) --> SOLVED: avoid sending all requests simultaneously
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
+- [ ] Create an `api` using a `router` to get data of files from `/public`.
 - [ ] Add `season` to get cyclists for every year
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
 - [ ] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/client` folder.
 - [ ] Create & Publish package: add bin.js, directory structure, SOLID principles, etc. + `babel-node`, etc.
 - [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
 - [x] Added a property `image:` with the name of image file
+- [ ] Parse dates using https://www.npmjs.com/package/date-and-time
 
 > REFACTORING:
 - [x] Linting

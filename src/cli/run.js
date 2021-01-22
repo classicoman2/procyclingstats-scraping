@@ -2,6 +2,8 @@ const chalk = require("chalk");
 const express = require("express");
 const path = require("path");
 
+const load = require('./utils/load')
+
 // El servidor
 const jsonServer = require("../server");
 
@@ -30,10 +32,15 @@ module.exports = function (argv) {
 
   app.use(express.static(__dirname + "/public"));
 
-  app.get("*", function (req, res) {
+  app.get("/", function (req, res) {
     res.sendFile(path.dirname(path.dirname(__dirname)) + "/public/index.html");
   });
-
-  //xtoni
+  
   console.log(chalk.green(` Running in http://localhost:${port}`));
+
+  // Get dades dels fitxers
+  app.get("/api", function (req, res)  {
+    //xtoni -> passar a constant
+    res.send(load("/_output"));
+  });
 };
