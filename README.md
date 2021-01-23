@@ -46,6 +46,7 @@ npm i
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
+- [ ] Capture the image of the cyclist in the rider's page instead of team's page (because now it's downloading all the images of the team every time!)
 - [ ] Change `Promise.all` by a method that executes the promises with a random delay, to avoid being detected/blocked by the server
 - [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once

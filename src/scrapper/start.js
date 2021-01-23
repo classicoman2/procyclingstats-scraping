@@ -182,7 +182,7 @@ function scrapCyclistData(rider_url) {
  *
  * @return {undefined}
  */
-function scrapImagesFromTeam(output_dir, url_base, teamDirectory) {
+function scrapImagesFromTeam(output_dir, url_base, teamDirectory, season=2021) {
   //Crea una promesa
   return new Promise(function (fulfil, reject) {
     request(url_base + "/team/" + teamDirectory)
@@ -190,6 +190,8 @@ function scrapImagesFromTeam(output_dir, url_base, teamDirectory) {
 
         // scrap urls of the images
         urlsImages = scrapImagesUrls(html, url_base)
+
+console.log(urlsImages)
 
         // Create a dir for every team if doesn't exist
         if (!fs.existsSync(output_dir + "/" + teamDirectory)) fs.mkdirSync(output_dir + "/" + teamDirectory);

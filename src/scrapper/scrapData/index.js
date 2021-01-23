@@ -14,7 +14,7 @@ function scrapImagesUrls(html, url_base) {
 
   for (let i = 0; i < numCiclistes - 1; i++) {
     let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
-    let imageUrl = property.slice(property.indexOf("url") + 4, property.indexOf(".jpeg") + 5);
+    let imageUrl = property.slice(property.indexOf("url") + 4, property.indexOf(".jp") + 5);
     urlsImages.push(url_base + "/" + imageUrl);
   }
 
