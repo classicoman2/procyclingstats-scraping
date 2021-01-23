@@ -1,6 +1,9 @@
-const chalk = require("chalk");
 const express = require("express");
+const cors = require('cors');
+
 const path = require("path");
+
+const chalk = require("chalk");
 
 const load = require("./utils/load");
 
@@ -8,7 +11,6 @@ const load = require("./utils/load");
 const jsonServer = require("../server");
 
 module.exports = function (argv) {
-
   console.log();
   console.log(chalk.cyan("  \\{^_^}/ hi!"));
   console.log();
@@ -29,7 +31,8 @@ module.exports = function (argv) {
   });
 */
 
-  app.use(express.static("public"));
+  app.use(cors())
+  app.use(express.static("public"))
 
   app.get("/", function (req, res) {
     res.sendFile(path.dirname(path.dirname(__dirname)) + "/public/index.html");
