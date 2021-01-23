@@ -1,7 +1,7 @@
-# web-scrapping
+# procyclingstats-scraping
 A script to scrap data from UCI cycling teams in Procycling Stats.
 
-Disclaimer: I use the scrapped data for teaching purposes only.
+Disclaimer: I use the scraped data for teaching purposes only.
 
 ## Table of contents
 
@@ -37,16 +37,13 @@ npm i
  * https://stackoverflow.com/questions/42706584/eslint-error-parsing-error-the-keyword-const-is-reserved
 
 ## TODO
-> PREVI VERSIO
-- [ ] Change name of repository to `procyclingstats-scrapper`
-
 > BUGS
-- [ ] Can't specify port number with `--port`, some mistake when capturing argv 
+- [ ] Have a look at argv capture to see how to use it for configuration
 - [x] Debug errors in promises (when all data is required in a single execution) --> SOLVED: avoid sending all requests simultaneously
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
-- [ ] Separate `cheerio` functions in separated folders ?
+- [ ] Capture the image of the cyclist in the rider's page instead of team's page (because now it's downloading all the images of the team every time!)
 - [ ] Change `Promise.all` by a method that executes the promises with a random delay, to avoid being detected/blocked by the server
 - [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
@@ -55,8 +52,8 @@ npm i
 - [x] Created an `/api` route to get json from files inside `_output` directory.
 - [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
 - [x] Added a property `image:` with the name of image file
-- [x] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/public` folder.
 - [x] Add `season` to get cyclists for every year
+- [x] Separate `cheerio` functions in separated folders
 - [ ] Change default parameter 99 to say that we want maximum number of cyclists
 
 > REFACTORING:

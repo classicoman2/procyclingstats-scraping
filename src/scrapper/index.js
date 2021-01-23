@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { getTeamsData } = require("./getTeamsData");
+const start = require("./start");
 
 const OUTPUT_DIR = "_output";
 const CURRENT_SEASON = 2021;
@@ -23,7 +23,7 @@ const CURRENT_SEASON = 2021;
     let i = Number(teamStart);
     // Random interval between 3 and 6 sec
     let interval = setInterval(() => {
-      getTeamsData(OUTPUT_DIR, url_base, scrapImages, scrapData, i, i + 1, season);
+      start(OUTPUT_DIR, url_base, scrapImages, scrapData, i, i + 1, season);
       i++;
 
       if (i == teamEnd) clearInterval(interval);

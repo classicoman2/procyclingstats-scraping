@@ -1,7 +1,7 @@
 {
   "name": "web-scrapping",
   "version": "1.0.0",
-  "description": "A script to scrap data from UCI cycling teams in Procycling Stats",
+  "description": "A script to scrap data from UCI cycling teams in Procycling Stats. Disclaimer: teaching purposes, no commercial usage",
   "main": "index.js",
   "scripts": {
     "scrap": "node src/scrapper/index.js",

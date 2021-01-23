@@ -1,11 +1,12 @@
 const request = require("request-promise");
-const $ = require("cheerio");
-var fs = require("fs");
+const fs = require("fs");
 const fm = require("./fileManagement");
 const chalk = require("chalk");
-const path = require("path");
 
-const scrapCyclistPage = require('./scrapCyclistPage')
+const scrapCyclistPage = require("./scrapData").scrapCyclistPage;
+const scrapTeamsDirectories = require("./scrapData").scrapTeamsDirectories;
+const scrapCyclistsUrls = require("./scrapData").scrapCyclistsUrls;
+const scrapImagesUrls = require("./scrapData").scrapImagesUrls;
 
 /**
  * Fent scrapping, obté els directoris de fotos dels equips
@@ -18,32 +19,29 @@ const scrapCyclistPage = require('./scrapCyclistPage')
  * @param {string}  teamEnd  Posicio final directori de teams; si val 99, agafa valor màxim
  * @param {string}  season   2021 by default
  */
-function getTeamsData(output_dir, url_base, getCyclistImages=true, getCyclistsData=true, teamStart=0, teamEnd=99, season=2021) {
-  //Array de directoris amb fotos en la url
-  let directoris = [];
-
+module.exports = function (
+  output_dir,
+  url_base,
+  getCyclistImages = true,
+  getCyclistsData = true,
+  teamStart = 0,
+  teamEnd = 99,
+  season = 2021
+) {
   //xtoni - Posar a configuració, potser a .env?
   let CYCLISTS_PER_TEAM = 2;
 
-  let url_request = url_base+`/teams.php?year=${season}&filter=Filter`;
+  let url_request = url_base + `/teams.php?year=${season}&filter=Filter`;
 
   // request a la url on hi ha tots els equips llistats
   request(url_request)
     .then(function (html) {
-      // Obte tots els elements HTML que compleixen el patró emprant cheerio
-      let divTeams = $("ul.list a", html);
-
-      // Obté els directoris d'equips
-      for (i in divTeams) {
-        if (divTeams[i].attribs !== undefined) 
-          directoris.push(divTeams[i].attribs.href.slice(5));
-      }
+      // Scrap teams directories
+      let directoris = scrapTeamsDirectories(html);
 
       if (getCyclistsData) {
-        //Array de promises de tots els equips
+        //Array de promises de tots els equips --> 1 promesa per equip
         let promises = [];
-
-        // 1 promesa per equip
         directoris.slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length).forEach((directori) => {
           promises.push(scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori, CYCLISTS_PER_TEAM));
         });
@@ -94,42 +92,31 @@ function getTeamsData(output_dir, url_base, getCyclistImages=true, getCyclistsDa
       console.log(err);
       //handle error
     });
-}
+};
 
 /**
  * Captura dades dels ciclistes
  *
  * @param {string} url_base url base de la pàgina de ProCycling Stats
  * @param {string} url_team  url de l'equip
- * @param {string} numCyclists number of cyclists we want to get
+ * @param {string} numCyclists scrap first numCyclist riders of the team
  * @return {string}  JSON data
  */
-function scrapCyclistDataFromTeam(url_base, url_team, numCyclists=99 ) {
+function scrapCyclistDataFromTeam(url_base, url_team, numCyclists = 99) {
   // Request del html de la pàgina de l'equip
   return new Promise(function (fulfil, reject) {
     request(url_team)
       .then(function (html) {
-        //success!
+        // get url of riders' pages
+        let riders_urls = scrapCyclistsUrls(html, url_base);
 
-        let riders = [];
-        let riders_urls = [];
-
-        riders = $("a.rider", html);
-
-        // Compose url of cyclist pages
-        for (let i = 0; i < riders.length; i++) {
-          riders_urls[i] = url_base + "/" + riders[i].attribs.href;
-        }
-
-        let num = (numCyclists==99) ? riders_urls.length : numCyclists;
+        let num = numCyclists == 99 ? riders_urls.length : numCyclists;
 
         //Array of promises: 1 promise per cyclist page
         let promises = [];
         riders_urls.slice(0, num).forEach((rider_url) => {
           promises.push(scrapCyclistData(rider_url));
         });
-
-        //Array de promises
 
         // Executa totes les promeses de scrap de dades de ciclistes
         Promise.all(promises)
@@ -165,17 +152,16 @@ function scrapCyclistData(rider_url) {
   return new Promise(function (fulfil, reject) {
     request(rider_url)
       .then(function (html) {
-
         // Scrap cyclist page
-        data = scrapCyclistPage(html)
-   
+        data = scrapCyclistPage(html);
+
         //fulfil promise with cyclist data
         fulfil({
           nom: data.name,
           naixement: data.birthdate,
           pes: data.weight,
           altura: data.height,
-          imatge: data.image
+          imatge: data.image,
         });
       })
       .catch(function (err) {
@@ -196,21 +182,14 @@ function scrapCyclistData(rider_url) {
  *
  * @return {undefined}
  */
-function scrapImagesFromTeam(output_dir, url_base, teamDirectory) {
+function scrapImagesFromTeam(output_dir, url_base, teamDirectory, season=2021) {
   //Crea una promesa
   return new Promise(function (fulfil, reject) {
     request(url_base + "/team/" + teamDirectory)
       .then(function (html) {
-        let dadesCiclistes = [];
-        let numCiclistes = $(".tmCont1 > ul > li a", html).length;
 
-        for (let i = 0; i < numCiclistes - 1; i++) {
-          let property = $(".tmCont1 > ul > li a", html)[i].attribs.style;
-
-          let imageUrl = property.slice(property.indexOf("url") + 4, property.indexOf(".jpeg") + 5);
-
-          dadesCiclistes.push(url_base + "/" + imageUrl);
-        }
+        // scrap urls of the images
+        urlsImages = scrapImagesUrls(html, url_base)
 
         // Create a dir for every team if doesn't exist
         if (!fs.existsSync(output_dir + "/" + teamDirectory)) fs.mkdirSync(output_dir + "/" + teamDirectory);
@@ -219,16 +198,16 @@ function scrapImagesFromTeam(output_dir, url_base, teamDirectory) {
         var n = 0;
 
         // Download the images
-        for (let i = 0; i < numCiclistes - 1; i++) {
-          let fileName = dadesCiclistes[i].slice(dadesCiclistes[i].lastIndexOf("/") + 1);
+        for (let i = 0; i < urlsImages.length; i++) {
+          let fileName = urlsImages[i].slice(urlsImages[i].lastIndexOf("/") + 1);
 
           if (fileName.length == 0) {
             n++;
           } else {
-            fm.downloadFileFromURI(dadesCiclistes[i], output_dir + "/" + teamDirectory + "/" + fileName, function () {
+            fm.downloadFileFromURI(urlsImages[i], output_dir + "/" + teamDirectory + "/" + fileName, function () {
               try {
                 n++;
-                if (n == numCiclistes) {
+                if (n == urlsImages.length) {
                   // Promise must be fulfilled
                   fulfil(html);
                   console.log("promise fulfilled");
@@ -248,5 +227,3 @@ function scrapImagesFromTeam(output_dir, url_base, teamDirectory) {
       });
   });
 }
-
-module.exports = { getTeamsData };
