@@ -20,6 +20,9 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
   //Array de directoris amb fotos en la url
   let directoris = [];
 
+  //xtoni - Posar a configuració, potser a .env?
+  let CYCLISTS_PER_TEAM = 2;
+
   let url_request = (season !== "") ? url_base + `/teams.php?year=${season}&filter=Filter` : url_base + "/teams";
 
   // request a la url on hi ha tots els equips llistats
@@ -40,7 +43,7 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
 
         // 1 promesa per equip
         directoris.slice(teamStart, teamEnd < 99 ? teamEnd : directoris.length).forEach((directori) => {
-          promises.push(scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori));
+          promises.push(scrapCyclistDataFromTeam(url_base, url_base + "/team/" + directori, CYCLISTS_PER_TEAM));
         });
 
         //Array de promises: Executa totes les promeses per obtenir dades de l'equip
@@ -96,10 +99,10 @@ function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, t
  *
  * @param {string} url_base url base de la pàgina de ProCycling Stats
  * @param {string} url_team  url de l'equip
- *
+ * @param {string} numCyclists number of cyclists we want to get
  * @return {string}  JSON data
  */
-function scrapCyclistDataFromTeam(url_base, url_team) {
+function scrapCyclistDataFromTeam(url_base, url_team, numCyclists=99 ) {
   // Request del html de la pàgina de l'equip
   return new Promise(function (fulfil, reject) {
     request(url_team)
@@ -111,17 +114,16 @@ function scrapCyclistDataFromTeam(url_base, url_team) {
 
         riders = $("a.rider", html);
 
+        // Compose url of cyclist pages
         for (let i = 0; i < riders.length; i++) {
-          // Promise per accedir a dades de ciclista
-
           riders_urls[i] = url_base + "/" + riders[i].attribs.href;
         }
 
-        //Array de promises
-        let promises = [];
+        let num = (numCyclists==99) ? riders_urls.length : numCyclists;
 
-        // 1 promesa per ciclista
-        riders_urls.forEach((rider_url) => {
+        //Array of promises: 1 promise per cyclist page
+        let promises = [];
+        riders_urls.slice(0, num).forEach((rider_url) => {
           promises.push(scrapCyclistData(rider_url));
         });
 

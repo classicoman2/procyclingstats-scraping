@@ -46,15 +46,17 @@ npm i
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
+- [ ] Change `Promise.all` by a method that executes the promises with a random delay, to avoid being detected/blocked by the server
 - [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
-- [x] Add `season` to get cyclists for every year
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
-- [x] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/public` folder.
 - [ ] Create & Publish package: add bin.js, directory structure, SOLID principles, etc. + `babel-node`, etc.
-- [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
-- [x] Added a property `image:` with the name of image file
 - [ ] Parse dates using https://www.npmjs.com/package/date-and-time
 - [x] Created an `/api` route to get json from files inside `_output` directory.
+- [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
+- [x] Added a property `image:` with the name of image file
+- [x] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/public` folder.
+- [x] Add `season` to get cyclists for every year
+- [ ] Change default parameter 99 to say that we want maximum number of cyclists
 
 > REFACTORING:
 - [x] Linting
