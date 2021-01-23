@@ -46,6 +46,7 @@ npm i
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
+- [ ] Separate `cheerio` functions in separated folders ?
 - [ ] Change `Promise.all` by a method that executes the promises with a random delay, to avoid being detected/blocked by the server
 - [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once

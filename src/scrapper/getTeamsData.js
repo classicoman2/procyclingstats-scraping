@@ -5,6 +5,8 @@ const fm = require("./fileManagement");
 const chalk = require("chalk");
 const path = require("path");
 
+const scrapCyclistPage = require('./scrapCyclistPage')
+
 /**
  * Fent scrapping, obté els directoris de fotos dels equips
  *
@@ -164,6 +166,9 @@ function scrapCyclistData(rider_url) {
     request(rider_url)
       .then(function (html) {
         // name
+
+        data = scrapCyclistPage(html)
+        /*
         let name = $("span.main-title", html)[0] ? $("span.main-title", html)[0].children[0].data : undefined;
 
         // birthdate
@@ -189,14 +194,14 @@ function scrapCyclistData(rider_url) {
           ? $(".rdr-img-cont img", html)[0]
           : "";
         image = (image != "") ? path.basename(image.attribs.src) : "";
-
+*/
         //fulfil promise with the data of the cyclist
         fulfil({
-          nom: name,
-          naixement: birthdate,
-          pes: weight,
-          altura: height,
-          imatge: image
+          nom: data.name,
+          naixement: data.birthdate,
+          pes: data.weight,
+          altura: data.height,
+          imatge: data.image
         });
       })
       .catch(function (err) {
