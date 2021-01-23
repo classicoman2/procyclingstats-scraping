@@ -18,7 +18,7 @@ const scrapCyclistPage = require('./scrapCyclistPage')
  * @param {string}  teamEnd  Posicio final directori de teams; si val 99, agafa valor màxim
  * @param {string}  season   2021 by default
  */
-function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, teamStart, teamEnd, season=2021) {
+function getTeamsData(output_dir, url_base, getCyclistImages=true, getCyclistsData=true, teamStart=0, teamEnd=99, season=2021) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
@@ -165,37 +165,11 @@ function scrapCyclistData(rider_url) {
   return new Promise(function (fulfil, reject) {
     request(rider_url)
       .then(function (html) {
-        // name
 
+        // Scrap cyclist page
         data = scrapCyclistPage(html)
-        /*
-        let name = $("span.main-title", html)[0] ? $("span.main-title", html)[0].children[0].data : undefined;
-
-        // birthdate
-        let day = $(".rdr-info-cont > b", html)[0] ? $(".rdr-info-cont > b", html)[0].children[0].parent.next.data : "";
-        let mesany = $(".rdr-info-cont > sup", html)[0]
-          ? $(".rdr-info-cont > sup", html)[0].children[0].parent.next.data
-          : "";
-        // birthdate
-        let birthdate = `${day.trim()}/${mesany.split(" ")[1]}/${mesany.split(" ")[2]}`;
-
-        // check if weight is in the html page
-        let weight = $(".rdr-info-cont > span > b", html)[0]
-          ? $(".rdr-info-cont > span > b", html)[0].children[0].parent.next.data.split(" ")[1]
-          : "";
-
-        // check if altura is in the html page
-        let height = $(".rdr-info-cont > span > span > b", html)[0]
-          ? $(".rdr-info-cont > span > span > b", html)[0].children[0].parent.next.data.split(" ")[1]
-          : "";
-
-        // get image
-        let image = $(".rdr-img-cont img", html)[0]
-          ? $(".rdr-img-cont img", html)[0]
-          : "";
-        image = (image != "") ? path.basename(image.attribs.src) : "";
-*/
-        //fulfil promise with the data of the cyclist
+   
+        //fulfil promise with cyclist data
         fulfil({
           nom: data.name,
           naixement: data.birthdate,
