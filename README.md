@@ -16,13 +16,13 @@ Disclaimer: I use the scrapped data for teaching purposes only.
 
 ## Usage
 ```bash
-# Scrap Images and data from teams, from 4th to 9th team
-npm run scrap true true 3 9
+# Scrap Images and data from teams, from 4th to 9th team, current season
+npm run scrap true true 3 9 
 ```
 
 ```bash
-# Scrap Images and data from all teams
-npm run scrap true true 0 99
+# Scrap Images and data from all teams of season 2005
+npm run scrap true true 0 99 2005
 ```
 
 ## Dependencies
@@ -37,24 +37,34 @@ npm i
  * https://stackoverflow.com/questions/42706584/eslint-error-parsing-error-the-keyword-const-is-reserved
 
 ## TODO
+> PREVI VERSIO
+- [ ] Change name of repository to `procyclingstats-scrapper`
+
 > BUGS
-- [ ] Parse dates using https://www.npmjs.com/package/date-and-time
+- [ ] Can't specify port number with `--port`, some mistake when capturing argv 
 - [x] Debug errors in promises (when all data is required in a single execution) --> SOLVED: avoid sending all requests simultaneously
 - [x] Normalize names of properties and variables (English)
 
 > UPGRADE:
-- [ ] Add `season` to get cyclists for every year
+- [ ] Separate `cheerio` functions in separated folders ?
+- [ ] Change `Promise.all` by a method that executes the promises with a random delay, to avoid being detected/blocked by the server
+- [ ] [Tor request](https://www.npmjs.com/package/tor-request) to avoid being detected
 - [ ] Now is making a request for all team ids everytime it looks for info for 1 team only in `index.js`. Should make the team ids requests only once
-- [ ] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/client` folder.
 - [ ] Create & Publish package: add bin.js, directory structure, SOLID principles, etc. + `babel-node`, etc.
+- [ ] Parse dates using https://www.npmjs.com/package/date-and-time
+- [x] Created an `/api` route to get json from files inside `_output` directory.
 - [x] Set _delays_ between promises to avoid massive sending of simultaneous async Requests 
 - [x] Added a property `image:` with the name of image file
+- [x] Create a `/server` directory with scrapping data and open a web server to show scrapped data with code in a `/public` folder.
+- [x] Add `season` to get cyclists for every year
+- [ ] Change default parameter 99 to say that we want maximum number of cyclists
 
 > REFACTORING:
 - [x] Linting
 - [ ] Automate Tests
 - [ ] Include exceptions in file functions
 - [ ] Use `path` module to standarize paths
+- [ ] Const `CYCLISTS_PER_TEAM` should go in configuration file of options (like in json-server code)
 
 > DONE:
 - [x] Added a self-invoking function to avoid creating variables in Global object and interferences with local vars
