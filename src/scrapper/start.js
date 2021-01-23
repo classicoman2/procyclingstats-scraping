@@ -191,8 +191,6 @@ function scrapImagesFromTeam(output_dir, url_base, teamDirectory, season=2021) {
         // scrap urls of the images
         urlsImages = scrapImagesUrls(html, url_base)
 
-console.log(urlsImages)
-
         // Create a dir for every team if doesn't exist
         if (!fs.existsSync(output_dir + "/" + teamDirectory)) fs.mkdirSync(output_dir + "/" + teamDirectory);
 
@@ -200,7 +198,7 @@ console.log(urlsImages)
         var n = 0;
 
         // Download the images
-        for (let i = 0; i < urlsImages.length - 1; i++) {
+        for (let i = 0; i < urlsImages.length; i++) {
           let fileName = urlsImages[i].slice(urlsImages[i].lastIndexOf("/") + 1);
 
           if (fileName.length == 0) {
