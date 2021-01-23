@@ -14,16 +14,16 @@ const path = require("path");
  * @param {boolean} getCyclistsData Se descarreguen les dates dels ciclistes?
  * @param {string}  teamStart  Posicio inicial directori de teams
  * @param {string}  teamEnd  Posicio final directori de teams; si val 99, agafa valor màxim
- * @param {string}  season   empty if not specified
+ * @param {string}  season   2021 by default
  */
-function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, teamStart, teamEnd, season) {
+function getTeamsData(output_dir, url_base, getCyclistImages, getCyclistsData, teamStart, teamEnd, season=2021) {
   //Array de directoris amb fotos en la url
   let directoris = [];
 
   //xtoni - Posar a configuració, potser a .env?
   let CYCLISTS_PER_TEAM = 2;
 
-  let url_request = (season !== "") ? url_base + `/teams.php?year=${season}&filter=Filter` : url_base + "/teams";
+  let url_request = url_base+`/teams.php?year=${season}&filter=Filter`;
 
   // request a la url on hi ha tots els equips llistats
   request(url_request)

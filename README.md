@@ -63,6 +63,7 @@ npm i
 - [ ] Automate Tests
 - [ ] Include exceptions in file functions
 - [ ] Use `path` module to standarize paths
+- [ ] Const `CYCLISTS_PER_TEAM` should go in configuration file of options (like in json-server code)
 
 > DONE:
 - [x] Added a self-invoking function to avoid creating variables in Global object and interferences with local vars

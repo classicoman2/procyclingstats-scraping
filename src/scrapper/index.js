@@ -3,6 +3,8 @@ const { getTeamsData } = require("./getTeamsData");
 
 const OUTPUT_DIR = "_output";
 
+const CURRENT_SEASON = 2021;
+
 (function () {
   const url_base = "https://www.procyclingstats.com";
   //Obté directoris dels equips
@@ -12,7 +14,7 @@ const OUTPUT_DIR = "_output";
   let teamStart = process.argv[4];
   let teamEnd = process.argv[5];
 
-  let season = (process.argv[6] !== undefined) ? process.argv[6] : "";
+  let season = (process.argv[6] !== undefined) ? process.argv[6] : CURRENT_SEASON;
 
   //Create output dir if doesn't exist
   if (scrapImages || scrapImages) {
